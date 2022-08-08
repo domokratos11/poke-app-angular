@@ -1,1 +1,4 @@
-<poke-card-list class=""></poke-card-list>
+<ng-container class="">
+  <search-box (newSearchEvent)="doSearch($event)"></search-box>
+  <poke-card-list [searchText]="searchText"></poke-card-list>
+</ng-container>

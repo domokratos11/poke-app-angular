@@ -5,5 +5,9 @@ import { Component } from '@angular/core';
   templateUrl: './app.component.html',
 })
 export class AppComponent {
-  title = 'poke-app-angular';
+  searchText?: string;
+
+  doSearch(searchText: string): void {
+    this.searchText = searchText;
+  }
 }
