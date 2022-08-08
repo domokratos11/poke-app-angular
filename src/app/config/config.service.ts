@@ -21,6 +21,13 @@ export interface PokemonInfo {
       url: string;
     };
   }[];
+  sprites: {
+    other: {
+      'official-artwork': {
+        front_default: string;
+      };
+    };
+  };
 }
 
 @Injectable()

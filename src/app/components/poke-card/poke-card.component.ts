@@ -21,7 +21,8 @@ export class PokeCard implements OnInit, OnChanges, AfterViewInit {
   pokeInfo: PokemonInfo;
   primaryType: string;
   secondaryType: string;
-  borderColor: string;
+  backgroundColor: string;
+  pokeImage: string;
 
   constructor(private configService: ConfigService) {}
 
@@ -35,11 +36,13 @@ export class PokeCard implements OnInit, OnChanges, AfterViewInit {
           true
         );
 
+        this.pokeImage =
+          this.pokeInfo.sprites.other['official-artwork'].front_default;
         this.secondaryType =
           this.pokeInfo.types.length == 2
             ? this.getTypeClass(this.pokeInfo.types[1].type.name, true)
             : '';
-        this.borderColor = this.getTypeClass(
+        this.backgroundColor = this.getTypeClass(
           this.pokeInfo.types[0].type.name,
           false
         );
