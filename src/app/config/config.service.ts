@@ -42,4 +42,7 @@ export class ConfigService {
   getPokemon(endpoint: string) {
     return this.http.get<PokemonInfo>(endpoint);
   }
+  getPokemonByIdName(text: string) {
+    return this.http.get<PokemonInfo>(`${this.fetchPokemonURL}${text}`);
+  }
 }

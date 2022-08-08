@@ -1,3 +1,4 @@
+import { ThisReceiver } from '@angular/compiler';
 import {
   AfterViewInit,
   Component,
@@ -17,7 +18,7 @@ import { ConfigService, PokemonInfo } from '../../config/config.service';
 })
 export class PokeCard implements OnInit, OnChanges, AfterViewInit {
   @Input()
-  pokeUrl: string;
+  pokeUrl?: string;
   pokeInfo: PokemonInfo;
   primaryType: string;
   secondaryType: string;
@@ -27,8 +28,9 @@ export class PokeCard implements OnInit, OnChanges, AfterViewInit {
   constructor(private configService: ConfigService) {}
 
   ngOnInit(): void {
+    if (!this.pokeUrl) return;
     this.configService
-      .getPokemon(this.pokeUrl)
+      .getPokemon(this.pokeUrl || '')
       .subscribe((data: PokemonInfo) => {
         this.pokeInfo = { ...data };
         this.primaryType = this.getTypeClass(
