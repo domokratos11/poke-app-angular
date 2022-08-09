@@ -1,6 +1,4 @@
-import { ThisReceiver } from '@angular/compiler';
 import {
-  AfterViewInit,
   Component,
   Input,
   OnChanges,
@@ -16,7 +14,7 @@ import { ConfigService, PokemonInfo } from '../../config/config.service';
   providers: [ConfigService],
   encapsulation: ViewEncapsulation.None,
 })
-export class PokeCard implements OnInit, OnChanges, AfterViewInit {
+export class PokeCard implements OnInit, OnChanges {
   @Input()
   pokeUrl?: string;
   pokeInfo: PokemonInfo;
@@ -28,27 +26,7 @@ export class PokeCard implements OnInit, OnChanges, AfterViewInit {
   constructor(private configService: ConfigService) {}
 
   ngOnInit(): void {
-    if (!this.pokeUrl) return;
-    this.configService
-      .getPokemon(this.pokeUrl || '')
-      .subscribe((data: PokemonInfo) => {
-        this.pokeInfo = { ...data };
-        this.primaryType = this.getTypeClass(
-          this.pokeInfo.types[0].type.name,
-          true
-        );
-
-        this.pokeImage =
-          this.pokeInfo.sprites.other['official-artwork'].front_default;
-        this.secondaryType =
-          this.pokeInfo.types.length == 2
-            ? this.getTypeClass(this.pokeInfo.types[1].type.name, true)
-            : '';
-        this.backgroundColor = this.getTypeClass(
-          this.pokeInfo.types[0].type.name,
-          false
-        );
-      });
+    this.GetPokemon();
   }
 
   getTypeClass(type: string, isBorder: boolean): string {
@@ -75,7 +53,33 @@ export class PokeCard implements OnInit, OnChanges, AfterViewInit {
     return types[type as keyof typeof types] || types['normal'];
   }
 
-  ngOnChanges(changes: SimpleChanges): void {}
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes['pokeUrl'].isFirstChange()) {
+      this.GetPokemon();
+    }
+  }
 
-  ngAfterViewInit(): void {}
+  GetPokemon(): void {
+    if (!this.pokeUrl) return;
+    this.configService
+      .getPokemon(this.pokeUrl || '')
+      .subscribe((data: PokemonInfo) => {
+        this.pokeInfo = { ...data };
+        this.primaryType = this.getTypeClass(
+          this.pokeInfo.types[0].type.name,
+          true
+        );
+
+        this.pokeImage =
+          this.pokeInfo.sprites.other['official-artwork'].front_default;
+        this.secondaryType =
+          this.pokeInfo.types.length == 2
+            ? this.getTypeClass(this.pokeInfo.types[1].type.name, true)
+            : '';
+        this.backgroundColor = this.getTypeClass(
+          this.pokeInfo.types[0].type.name,
+          false
+        );
+      });
+  }
 }

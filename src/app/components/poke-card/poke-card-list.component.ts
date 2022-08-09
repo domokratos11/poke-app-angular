@@ -22,9 +22,10 @@ export class PokeCardList implements OnInit, OnChanges {
     this.SearchPokemons();
   }
   ngOnChanges(changes: SimpleChanges): void {
-    if (!changes['searchText'].firstChange && this.searchText)
+    if (!changes['searchText'].firstChange && this.searchText) {
       this.searchText =
         this.configService.fetchPokemonURL + this.searchText?.toLowerCase();
+    }
   }
   SearchPokemons(): void {
     this.configService.getPokemons().subscribe((data: PokemonResult) => {
