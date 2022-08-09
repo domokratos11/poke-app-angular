@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
   Input,
@@ -22,6 +23,7 @@ export class PokeCard implements OnInit, OnChanges {
   secondaryType: string;
   backgroundColor: string;
   pokeImage: string;
+  showNotFound: boolean = false;
 
   constructor(private configService: ConfigService) {}
 
@@ -60,10 +62,11 @@ export class PokeCard implements OnInit, OnChanges {
   }
 
   GetPokemon(): void {
+    this.showNotFound = false;
     if (!this.pokeUrl) return;
-    this.configService
-      .getPokemon(this.pokeUrl || '')
-      .subscribe((data: PokemonInfo) => {
+
+    this.configService.getPokemon(this.pokeUrl || '').subscribe({
+      next: (data: PokemonInfo) => {
         this.pokeInfo = { ...data };
         this.primaryType = this.getTypeClass(
           this.pokeInfo.types[0].type.name,
@@ -80,6 +83,10 @@ export class PokeCard implements OnInit, OnChanges {
           this.pokeInfo.types[0].type.name,
           false
         );
-      });
+      },
+      error: (error: HttpErrorResponse) => {
+        this.showNotFound = true;
+      },
+    });
   }
 }

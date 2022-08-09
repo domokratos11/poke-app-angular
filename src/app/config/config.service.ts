@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
@@ -37,12 +37,24 @@ export class ConfigService {
   constructor(private http: HttpClient) {}
 
   getPokemons() {
-    return this.http.get<PokemonResult>(this.fetchPokemonURL);
+    return this.http
+      .get<PokemonResult>(this.fetchPokemonURL)
+      .pipe(catchError(this.handleError));
   }
   getPokemon(endpoint: string) {
-    return this.http.get<PokemonInfo>(endpoint);
+    return this.http
+      .get<PokemonInfo>(endpoint)
+      .pipe(catchError(this.handleError));
   }
   getPokemonByIdName(text: string) {
-    return this.http.get<PokemonInfo>(`${this.fetchPokemonURL}${text}`);
+    return this.http
+      .get<PokemonInfo>(`${this.fetchPokemonURL}${text}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    return throwError(
+      () => new Error('Something bad happened; please try again later.')
+    );
   }
 }
