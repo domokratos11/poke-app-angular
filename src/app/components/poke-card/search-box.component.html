@@ -24,8 +24,8 @@
       id="default-search"
       class="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-200 rounded-3xl focus:ring-blue-500"
       placeholder="Search Pokémon by Name or ID"
+      (keydown.enter)="SearchPokemon(inputType.value)"
       #inputType
-      required
     />
     <button
       type="submit"
