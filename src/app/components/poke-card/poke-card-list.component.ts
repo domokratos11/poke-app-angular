@@ -2,7 +2,6 @@ import {
   Component,
   OnInit,
   Input,
-  DoCheck,
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
@@ -16,6 +15,7 @@ import { ConfigService, PokemonResult } from '../../config/config.service';
 export class PokeCardList implements OnInit, OnChanges {
   response: PokemonResult | undefined;
   @Input() searchText?: string;
+  resultArray: any;
   constructor(private configService: ConfigService) {}
 
   ngOnInit(): void {
@@ -30,6 +30,23 @@ export class PokeCardList implements OnInit, OnChanges {
   SearchPokemons(): void {
     this.configService.getPokemons().subscribe((data: PokemonResult) => {
       this.response = { ...data };
+      this.resultArray = [...data.results];
     });
+  }
+  LoadMore(): void {
+    this.configService
+      .getNextPokemons(this.response?.next || '')
+      .subscribe((data: PokemonResult) => {
+        this.response = { ...data };
+        this.resultArray = [...data.results];
+      });
+  }
+  LoadWithoutReplace(): void {
+    this.configService
+      .getNextPokemons(this.response?.next || '')
+      .subscribe((data: PokemonResult) => {
+        this.response = { ...data };
+        this.resultArray = [...this.resultArray, ...data.results];
+      });
   }
 }

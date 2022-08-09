@@ -41,6 +41,11 @@ export class ConfigService {
       .get<PokemonResult>(this.fetchPokemonURL)
       .pipe(catchError(this.handleError));
   }
+  getNextPokemons(next: string) {
+    return this.http
+      .get<PokemonResult>(next)
+      .pipe(catchError(this.handleError));
+  }
   getPokemon(endpoint: string) {
     return this.http
       .get<PokemonInfo>(endpoint)
