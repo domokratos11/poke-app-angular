@@ -1,4 +1,9 @@
-<ng-container class="">
+<ng-container>
+  <img
+    src="../assets/images/pokemon-logo.png"
+    class="flex m-auto"
+    alt="Pokemon Logo"
+  />
   <search-box (newSearchEvent)="doSearch($event)"></search-box>
   <poke-card-list [searchText]="searchText"></poke-card-list>
 </ng-container>
