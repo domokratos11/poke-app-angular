@@ -15,6 +15,9 @@ import { ConfigService, PokemonResult } from '../../config/config.service';
 export class PokeCardList implements OnInit, OnChanges {
   response: PokemonResult | undefined;
   @Input() searchText?: string;
+  limit: string;
+  IdName: string;
+  offSet: number = 0;
   resultArray: any;
   constructor(private configService: ConfigService) {}
 
@@ -23,8 +26,30 @@ export class PokeCardList implements OnInit, OnChanges {
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (!changes['searchText'].firstChange && this.searchText) {
-      this.searchText =
-        this.configService.fetchPokemonURL + this.searchText?.toLowerCase();
+      const searchArray: string[] = this.searchText.split('|');
+      if (searchArray.length == 1) this.limit = searchArray[0];
+      else {
+        this.IdName = searchArray[0];
+        this.limit = searchArray[1];
+      }
+
+      if (this.IdName)
+        this.searchText =
+          this.configService.fetchPokemonURL + this.IdName.toLowerCase();
+      else {
+        this.searchText =
+          this.configService.fetchPokemonURL +
+          '?offset=' +
+          this.offSet +
+          '&limit=' +
+          this.limit;
+        this.configService
+          .getNextPokemons(this.searchText || '')
+          .subscribe((data: PokemonResult) => {
+            this.response = { ...data };
+            this.resultArray = [...data.results];
+          });
+      }
     }
   }
   SearchPokemons(): void {
@@ -33,20 +58,14 @@ export class PokeCardList implements OnInit, OnChanges {
       this.resultArray = [...data.results];
     });
   }
-  LoadMore(): void {
+  LoadMore(replace: boolean): void {
     this.configService
       .getNextPokemons(this.response?.next || '')
       .subscribe((data: PokemonResult) => {
         this.response = { ...data };
-        this.resultArray = [...data.results];
-      });
-  }
-  LoadWithoutReplace(): void {
-    this.configService
-      .getNextPokemons(this.response?.next || '')
-      .subscribe((data: PokemonResult) => {
-        this.response = { ...data };
-        this.resultArray = [...this.resultArray, ...data.results];
+        this.resultArray = replace
+          ? [...data.results]
+          : [...this.resultArray, ...data.results];
       });
   }
 }
